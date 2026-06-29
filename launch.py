@@ -56,6 +56,14 @@ def prepare_environment():
     if REINSTALL_ALL or not requirements_met(requirements_file):
         run_pip(f"install -r \"{requirements_file}\"", "requirements")
 
+    try:
+        import cupy
+    except ModuleNotFoundError:
+        pass
+    except ImportError as e:
+        print(f"Detected broken CuPy installation: {e}")
+        run(f'"{python}" -m pip uninstall -y cupy cupy-cuda12x', "Uninstalling broken cupy", "Couldn't uninstall cupy", live=True)
+
     return
 
 
